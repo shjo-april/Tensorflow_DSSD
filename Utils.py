@@ -142,22 +142,25 @@ def nms(dets, thresh):
 
     return dets[keep]
 
-def class_nms(pred_bboxes, pred_classes, threshold = 0.5, mode = 'Union'):
+def class_nms(pred_bboxes, pred_classes, threshold = 0.5):
     data_dic = {}
+    nms_bboxes = []
+    nms_classes = []
 
-    for bbox, class_index in zip(bboxes, classes):
+    for bbox, class_index in zip(pred_bboxes, pred_classes):
         try:
             data_dic[class_index].append(bbox)
         except KeyError:
             data_dic[class_index] = []
             data_dic[class_index].append(bbox)
-
+    
     for key in data_dic.keys():
-        data_dic[key] = np.asarray(data_dic[key], dtype = np.float32)
-        keep_indexs = py_nms(data_dic[key], threshold)
+        pred_bboxes = np.asarray(data_dic[key], dtype = np.float32)
+        pred_bboxes = nms(pred_bboxes, threshold)
 
-        for bbox in data_dic[key][keep_indexs]:
-            nms_bboxes.append(bbox)
+        for pred_bbox in pred_bboxes:
+            nms_bboxes.append(pred_bbox)
             nms_classes.append(key)
     
-    return nms_bboxes, nms_classes
+    return np.asarray(nms_bboxes, dtype = np.float32), np.asarray(nms_classes, dtype = np.int32)
+

@@ -16,7 +16,7 @@ def get_data(xml_path, training, normalize = True, augment = True):
         
         if augment:
             image, gt_bboxes, gt_classes = DataAugmentation(image, gt_bboxes, gt_classes)
-
+        
         image_h, image_w, image_c = image.shape
         image = cv2.resize(image, (IMAGE_WIDTH, IMAGE_HEIGHT), interpolation = cv2.INTER_CUBIC)
 
